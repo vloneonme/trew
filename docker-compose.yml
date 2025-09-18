@@ -24,23 +24,22 @@ services:
       sleep 5 &&
       mc alias set local http://minio:9000 admin 1qaz2wsx &&
       mc mb local/vedro-s-datoy || true &&
-      gzip -d -k /data/vedro-s-datoy/players.csv.gz &&
-      mc cp /data/vedro-s-datoy/*.csv local/vedro-s-datoy/
+      mc cp /data/anime-dataset-2023.csv local/vedro-s-datoy/
       "
     volumes:
-      - ./minio_data:/data
+      - ./data:/data
 
   jupyter:
-    image: jupyter/base-notebook
+    build: .
     container_name: jupyter
     ports:
       - "1337:8888"
     volumes:
       - ./notebooks:/home/jovyan/work
-    command: start-notebook.sh /home/jovyan/work/cs-go-was-astralis-cheating-all-along.ipynb
+      - ./data:/data
+    command: start-notebook.sh --NotebookApp.token=''
     depends_on:
-      - minio
+      - minio_init
 
 volumes:
   minio_data:
-
