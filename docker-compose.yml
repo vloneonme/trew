@@ -11,10 +11,30 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
+<<<<<<< HEAD
       - ./data:/data
     command: server /data --console-address ":9001"
     networks:
       - s3-jupyter-network
+=======
+      - minio_data:/data
+
+  minio_init:
+    image: minio/mc:latest
+    container_name: minio_init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5 &&
+      mc alias set local http://minio:9000 admin 1qaz2wsx &&
+      mc mb local/vedro-s-datoy || true &&
+      gzip -d -k /data/vedro-s-datoy/players.csv.gz &&
+      mc cp /data/vedro-s-datoy/*.csv local/vedro-s-datoy/
+      "
+    volumes:
+      - ./minio_data:/data
+>>>>>>> cb6c272 (vot vrode realno vse)
 
   jupyter:
     image: jupyter/datascience-notebook
