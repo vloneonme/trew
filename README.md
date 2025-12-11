@@ -1,2 +1,2 @@
 # trew
-wert
+my-labs
